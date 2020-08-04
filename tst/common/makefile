@@ -8,7 +8,7 @@ TMP=$(TGT) *~ \#*
 
 ARCH := -gencode arch=compute_61,code=sm_61
 
-FLAGS= $(ARCH) -O3 -rdc=true -lib -I../include -I/home/liusida/Simulators/voxcraft/voxcraft-sim/3rdparty/thrust
+FLAGS= $(ARCH) -O3 -rdc=true -lib -I../include # -I../../../../Simulators/voxcraft/voxcraft-sim/3rdparty/thrust
 ifeq ($(WITH_SCATTER), 1)
 FLAGS += -DWITH_SCATTER
 endif
