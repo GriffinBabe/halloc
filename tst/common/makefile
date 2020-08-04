@@ -6,11 +6,9 @@ SRC_H=*.h
 SRC=$(SRC_C) $(SRC_H)
 TMP=$(TGT) *~ \#*
 
-ARCH := -gencode arch=compute_20,code=sm_20 \
-	-gencode arch=compute_30,code=sm_30 \
-	-gencode arch=compute_35,code=sm_35
+ARCH := -gencode arch=compute_61,code=sm_61
 
-FLAGS= $(ARCH) -O3 -rdc=true -lib -I../include
+FLAGS= $(ARCH) -O3 -rdc=true -lib -I../include -I/home/liusida/Simulators/voxcraft/voxcraft-sim/3rdparty/thrust
 ifeq ($(WITH_SCATTER), 1)
 FLAGS += -DWITH_SCATTER
 endif
