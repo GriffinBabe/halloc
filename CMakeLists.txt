@@ -8,8 +8,11 @@ project(halloc LANGUAGES CXX CUDA)
 
 include_directories(src)
 file( GLOB SRC src/*.cu )
+file( GLOB SIMPLEST_SRC samples/simplest/*.cu)
 
 add_library(halloc ${SRC})
+add_executable(simplest ${SIMPLEST_SRC})
+target_link_libraries(simplest halloc)
 
 find_package(CUDA) # for CUDA_SELECT_NVCC_ARCH_FLAGS function
 if (NOT DEFINED CUDA_ARCH)
@@ -28,6 +31,7 @@ set(ARCH_FLAGS "-gencode" ${CUDA_ARCH})
 list(APPEND CMAKE_CUDA_FLAGS -gencode=${CUDA_ARCH})
 
 set_target_properties(halloc PROPERTIES CUDA_SEPARABLE_COMPILATION ON)
+set_target_properties(simplest PROPERTIES CUDA_SEPARABLE_COMPILATION ON)
 
 string(TOUPPER "${CMAKE_BUILD_TYPE}" uppercase_CMAKE_BUILD_TYPE)
 if(uppercase_CMAKE_BUILD_TYPE STREQUAL "DEBUG")

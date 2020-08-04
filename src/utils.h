@@ -127,7 +127,11 @@ __device__ inline uint warp_id(void) {
 __device__ inline uint warp_bcast(uint v, uint root_lid) {
 #if __CUDA_ARCH__ >= 300
 	// use warp intrinsics
-	return (uint) __shfl((int)v, root_lid);
+	#if __CUDA_ARCH__ >= 600
+		return (uint) __shfl_sync(0xFFFFFFFF, (int)v, root_lid); // Sida: replace __shfl with __shfl_sync: https://stackoverflow.com/questions/46345811/cuda-9-shfl-vs-shfl-sync
+	#else
+		return (uint) __shfl((int)v, root_lid);
+	#endif
 #else
 	// use shared memory
 	volatile __shared__ uint vs[MAX_NWARPS];
