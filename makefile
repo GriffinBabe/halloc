@@ -5,9 +5,7 @@ SRC_C=src/*.cu
 SRC_H=src/*.h src/*.cuh
 SRC=$(SRC_C) $(SRC_H)
 TGT=bin/$(NAME)
-ARCH= -gencode arch=compute_20,code=sm_20 \
-	-gencode arch=compute_30,code=sm_30 \
-	-gencode arch=compute_35,code=sm_35
+ARCH= -gencode arch=compute_61,code=sm_61
 #TEST_TGT=tst/corr/bin/test
 
 TMP=*~ \\\#* src/*~ src/\\\#* tst/corr/*~ tst/corr/*.o $(TGT) $(TEST_TGT)
