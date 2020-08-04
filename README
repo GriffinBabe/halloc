@@ -22,6 +22,7 @@ Hardware: Compute Capability 2.0 or higher (tested on CC 3.5 devices K20X and K4
 
 Note: libraries and tests are currently not compiled for compute_50/sm_50, i.e. Maxwell.
 
+Sida Update: test with CUDA 10.1 on CC 6.1 devices (GTX 1070 compute_61/sm_61).
 
 COMPILING
 
