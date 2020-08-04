@@ -77,11 +77,11 @@ __device__ __forceinline__ uint size_ctr_inc(uint size_id) {
 	//	if(want_inc) {
 	//mask = __ballot(1);
 	while(want_inc) {
-		mask = __ballot(want_inc);
+		mask = __ballot_sync(0xFFFFFFFF, want_inc);
 		leader_lid = warp_leader(mask);
 		uint leader_size_id = size_id;
 		leader_size_id = warp_bcast(leader_size_id, leader_lid);
-		group_mask = __ballot(size_id == leader_size_id);
+		group_mask = __ballot_sync(0xFFFFFFFF, size_id == leader_size_id);
 		//group_mask = __ballot(1);
 
 		mask &= ~group_mask;
@@ -150,8 +150,8 @@ __device__ __forceinline__ void *hamalloc_small(uint nbytes) {
 			p = sb_alloc_in(ihead, head_sb, ichunk, itry, size_id, need_roomy_sb);
 			want_alloc = !p;
 			//assert(!want_alloc || need_roomy_sb);
-			while(__any(need_roomy_sb)) {
-				uint need_roomy_mask = __ballot(need_roomy_sb);
+			while(__any_sync(0xFFFFFFFF, need_roomy_sb)) {
+				uint need_roomy_mask = __ballot_sync(0xFFFFFFFF, need_roomy_sb);
 				if(need_roomy_sb) {
 					uint leader_lid = warp_leader(need_roomy_mask);
 					uint leader_size_id = size_id;
@@ -176,7 +176,7 @@ __device__ __forceinline__ void *hamalloc_small(uint nbytes) {
 			//ntries++;
 			//assert(ntries < 256);
 		}
-	} while(__any(want_alloc));
+	} while(__any_sync(0xFFFFFFFF, want_alloc));
 	//__threadfence();
 	return p;
 }  // hamalloc_small

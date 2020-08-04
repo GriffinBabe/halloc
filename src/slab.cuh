@@ -128,12 +128,12 @@ __device__ __forceinline__ uint sb_ctr_inc
 	//while(mask = __ballot(want_inc)) {
 	//	if(want_inc) {
 	while(want_inc) {
-		mask = __ballot(1);
+		mask = __ballot_sync(0xFFFFFFFF, 1);
 		leader_lid = warp_leader(mask);
 		uint leader_sb_id = sb_id;
 		leader_sb_id = warp_bcast(leader_sb_id, leader_lid);
 		// allocation size is same for all superblocks
-		uint group_mask = __ballot(sb_id == leader_sb_id);
+		uint group_mask = __ballot_sync(0xFFFFFFFF, sb_id == leader_sb_id);
 		change = nchunks * __popc(group_mask);
 		if(lid == leader_lid)
 			old_counter = sb_counter_inc(&sb_counters_g[sb_id], change);
@@ -161,7 +161,7 @@ __device__ __forceinline__ uint sb_ctr_inc
 __device__ __forceinline__ void sb_ctr_dec(uint sb_id, uint nchunks) {
 	bool want_inc = true;
 	uint mask, lid = lane_id();
-	while(mask = __ballot(want_inc)) {
+	while(mask = __ballot_sync(0xFFFFFFFF, want_inc)) {
 		//while(want_inc) {
 		//mask = __ballot(want_inc);
 		uint leader_lid = warp_leader(mask), leader_sb_id = sb_id;
@@ -172,7 +172,7 @@ __device__ __forceinline__ void sb_ctr_dec(uint sb_id, uint nchunks) {
 		// TODO: handle the situation when different allocation sizes are 
 		// freed within the same slab, and do reduction for that
 		bool want_now = sb_id == leader_sb_id && nchunks == leader_nchunks;
-		uint change = nchunks * __popc(__ballot(want_now));
+		uint change = nchunks * __popc(__ballot_sync(0xFFFFFFFF, want_now));
 		if(lid == leader_lid) {
 			uint old_counter = sb_counter_dec(&sb_counters_g[sb_id], change);
 			if(!sb_is_head(old_counter)) {
