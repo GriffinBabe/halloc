@@ -187,14 +187,14 @@ __device__ __forceinline__ void *hamalloc_large(size_t nbytes) {
 }  // hamalloc_large
 
 /** a helper function to define various interfaces to halloc */
-__device__ __forceinline__ void *hamalloc_inline(size_t nbytes) {
+__device__ void *hamalloc_inline(size_t nbytes) {
 	if(nbytes <= MAX_BLOCK_SZ)
 		return hamalloc_small(nbytes);
 	else
 		return hamalloc_large(nbytes);
 } // hamalloc
 
-__device__ __noinline__ void *hamalloc(size_t nbytes) {
+__device__ void *hamalloc(size_t nbytes) {
 	return hamalloc_inline(nbytes);
 }
 
